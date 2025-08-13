@@ -35,3 +35,29 @@ export const registration=async(req,res)=>{
         return res.status(500).json({message:`signup/registration error${error}`});
     }
 }
+
+export const login=async(req,res)=>{
+    try{
+        let {email,password}=req.body;
+        let user=await User.findOne({email});
+        if(!user){
+            return res.status(404).json({message:"User not found"});
+        }
+        let isMatch=await bcrypt.compare(password,user.password);
+        if(!isMatch){
+            return res.status(400).json({message:"Incorrect password"});
+        }
+        let token=await genToken(user._id);
+        res.cookie("token",token,{
+            httpOnly:true,
+            secure:false,
+            sameSite:"Strict",
+            maxAge:7*24*60*60*1000,
+        })
+        return res.status(201).json({message:"login successfuly"});
+    }
+    catch(error){
+        console.log("login error");
+        return res.status(500).json({message:`login error${error}`});
+    }
+}
