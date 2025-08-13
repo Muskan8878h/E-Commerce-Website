@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs"
 import { genToken } from '../config/token.js';
 
 
-export const register=async(req,res)=>{
+export const registration=async(req,res)=>{
     try{
         const {name,email,password}=req.body;
         const existUser=await User.findOne({email});
@@ -32,6 +32,6 @@ export const register=async(req,res)=>{
     }
     catch(error){
         console.log("signup error");
-        return res.status(500).json({message:`signup/register error${error}`});
+        return res.status(500).json({message:`signup/registration error${error}`});
     }
 }
